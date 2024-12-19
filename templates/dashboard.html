@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chatbot Dashboard</title>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.7.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            height: 100vh;
+            background-color: #343a40;
+            color: white;
+            position: fixed;
+            width: 260px;
+            padding: 1rem;
+        }
+
+        .sidebar h4 {
+            color: #e9ecef;
+        }
+
+        .sidebar .nav-link {
+            color: #adb5bd;
+            margin: 0.5rem 0;
+            border-radius: 5px;
+        }
+
+        .sidebar .nav-link:hover {
+            background-color: #495057;
+            color: white;
+        }
+
+        /* Main Content */
+        main {
+            margin-left: 280px;
+            padding: 2rem;
+        }
+
+        /* Stat Card Styles */
+        .stat-card {
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 120px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .bg-gradient-blue {
+            background: linear-gradient(90deg, #5D9CEC, #4A90E2);
+        }
+
+        .bg-gradient-green {
+            background: linear-gradient(90deg, #34D399, #10B981);
+        }
+
+        .bg-gradient-orange {
+            background: linear-gradient(90deg, #F59E0B, #D97706);
+        }
+
+        /* Chart Container */
+        .chart-container {
+            margin-top: 2rem;
+        }
+
+        .chart-container canvas {
+            height: 250px !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h4>AI Chatbot</h4>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link active" href="#"><i class="fas fa-home"></i> Dashboard</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#"><i class="fas fa-comments"></i> User Feedbacks</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#"><i class="fas fa-file-alt"></i> Uploaded Files</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#"><i class="fas fa-users"></i> User Tracker</a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Dashboard Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Dashboard Overview</h2>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="row">
+            <div class="col-md-3">
+                <div class="stat-card bg-gradient-blue">
+                    <i class="fas fa-database stat-icon"></i>
+                    <h6>Total Queries</h6>
+                    <p class="h5">1,234</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card bg-gradient-green">
+                    <i class="fas fa-thumbs-up stat-icon"></i>
+                    <h6>Liked Responses</h6>
+                    <p class="h5">987</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card bg-gradient-orange">
+                    <i class="fas fa-thumbs-down stat-icon"></i>
+                    <h6>Disliked Responses</h6>
+                    <p class="h5">123</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="chart-container">
+            <div class="row">
+                <div class="col-md-6">
+                    <canvas id="lineChart"></canvas>
+                </div>
+                <div class="col-md-6">
+                    <canvas id="barChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.7.0/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Line Chart
+        new Chart(document.getElementById('lineChart').getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{
+                    label: 'Daily Queries',
+                    data: [50, 75, 60, 90, 120, 130, 150],
+                    borderColor: '#4A90E2',
+                    backgroundColor: 'rgba(74, 144, 226, 0.2)',
+                    fill: true
+                }]
+            }
+        });
+
+        // Bar Chart
+        new Chart(document.getElementById('barChart').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Monthly Queries',
+                    data: [300, 500, 400, 600, 700, 800],
+                    backgroundColor: '#34D399'
+                }]
+            }
+        });
+    </script>
+</body>
+</html>

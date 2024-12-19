@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Login</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+            color: #333;
+        }
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            background: rgba(243, 253, 255, 0.274);
+            border-radius: 12px;
+            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            animation: fadeIn 0.8s ease;
+        }
+        .login-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .login-header h1 {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #333;
+        }
+        .login-header p {
+            font-size: 0.9rem;
+            color: #777;
+        }
+        .form-floating {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .form-floating input {
+            width: 100%;
+            padding: 20px 15px 10px;
+            border: none;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.85);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+            font-size: 1rem;
+            color: #333;
+            transition: all 0.3s ease;
+        }
+
+        .form-floating input:focus {
+            background: rgba(255, 255, 255, 1);
+            outline: none;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-floating label {
+            position: absolute;
+            top: 18px;
+            left: 15px;
+            font-size: 1rem;
+            color: #aaa;
+            transition: all 0.3s ease;
+        }
+
+        .form-floating input:focus + label,
+        .form-floating input:not(:placeholder-shown) + label {
+            top: -10px;
+            left: 10px;
+            font-size: 0.8rem;
+            color: #555;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 0 5px;
+            border-radius: 5px;
+        }
+
+        .btn-login {
+            width: 100%;
+            height: 50px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #ffffff, #dcdde1);
+            border: 1px solid #ddd;
+            color: #333;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .btn-login:hover {
+            background: linear-gradient(135deg, #e9ecef, #ffffff);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        .forgot-password {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 0.85rem;
+        }
+        .forgot-password a {
+            color: #555;
+            text-decoration: none;
+        }
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <h1>Login</h1>
+            <p>Access your account</p>
+        </div>
+        <form id="login-form" method="POST">
+            <div class="form-floating">
+                <input
+                  type="text"
+                  id="user_name"
+                  placeholder=" "
+                  class="form-control"
+                  required
+                >
+                <label for="user_name">User Name</label>
+            </div>
+            <div class="form-floating">
+                <input
+                  type="password"
+                  id="password"
+                  placeholder=" "
+                  class="form-control"
+                  required
+                >
+                <label for="password">Password</label>
+            </div>
+            <button type="submit" class="btn btn-login mt-3" id="login-btn">
+                Login <i class="fas fa-sign-in-alt"></i>
+            </button>
+        </form>
+    </div>
+
+    <!-- Include Full jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.7.0/js/bootstrap.min.js"></script>
+    
+    <script>
+        $(document).ready(function () {
+            $("#login-form").on("submit", function (e) {
+                e.preventDefault(); // Prevent the form from submitting normally
+
+                var user_name= $("#user_name").val();
+                var password = $("#password").val();
+
+                if (user_name !== "" && password !== "") { 
+                    $(".btn-login").attr("disabled", true).text("Logging in...");
+
+                    $.ajax({
+                        url: "login_auth", // Your backend PHP script URL
+                        type: "POST",
+                        contentType: "application/json",
+                        credentials: 'include',
+                        data: JSON.stringify({
+                            user_name: user_name,
+                            password: password
+                        }), 
+                        dataType: "json", // Ensure the response is parsed as JSON
+                        success: function (response) {
+                            
+                            // alert(JSON.stringify(response,null,2))
+
+                            if (response.status === "success") {
+                               
+                                window.location.href = "index"; 
+                            } else {
+                                alert("Invalid credentials, please try again.");
+                            }
+
+                            $(".btn-login").attr("disabled", false).text("Login");
+                        },
+                        error: function (error) {
+                            alert("Something went wrong, please try again.");
+                            $(".btn-login").attr("disabled", false).text("Login");
+                        }
+                    });
+                } else {
+                    alert("Please fill in both fields.");
+                }
+            });
+        });
+    </script>
+</body>
+</html>

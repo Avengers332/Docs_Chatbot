@@ -1,0 +1,107 @@
+.modal-dashboard-dialog {
+    max-width: 1200px; /* Increased for better fit */
+}
+
+.modal-content {
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+    background-color: #c2c4c666;
+    color: rgb(33, 33, 33);
+    padding: 15px 30px;
+    border-bottom: 1px solid #ddd;
+    border-radius: 10px 10px 0 0;
+}
+
+.modal-header h5 {
+    margin: 0;
+    font-size: 24px;
+}
+
+.modal-header .close {
+    color: rgb(0, 0, 0);
+    font-size: 30px;
+    background: transparent;
+    border: none;
+    opacity: 1;
+}
+
+.sidebar {
+    border-right: 1px solid #ddd;
+    padding-top: 15px;
+}
+
+.sidebar button {
+    width: 100%;
+    text-align: left;
+    padding: 12px 20px;
+    border: none;
+    background: none;
+    color: #495057;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.sidebar button:hover {
+    background-color: #e9ecef;
+    cursor: pointer;
+}
+
+.sidebar .active {
+    background-color: #007bff;
+    color: white;
+}
+
+.content-area {
+    padding: 20px;
+}
+
+.content-area h4 {
+    margin-top: 0;
+}
+
+.modal-card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s;
+    margin-bottom: 20px; /* Added spacing between cards */
+}
+
+.modal-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f1f1f1;
+    transition: background 0.3s ease;
+}
+
+.chart-container {
+    height: 320px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+
+@media (max-width: 767px) {
+    .sidebar {
+        padding-top: 10px;
+    }
+
+    .sidebar button {
+        padding: 10px 15px;
+    }
+
+    .content-area {
+        padding: 10px;
+    }
+}
+
+#timeRangeSelect {
+    font-size: 16px; /* Adjust the font size to make the selected value more visible */
+    padding: 5px; /* Optional: Add some padding to increase the height of the dropdown */
+}

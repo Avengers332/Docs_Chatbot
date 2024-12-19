@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>ConVox AI Agent</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/chat_bot.css">
+    <script src="/static/js/jquery.min.js"></script>
+<style>
+    /* General styling for the conversation list */
+/* General styling for the conversation list */
+.chat-conversation {
+    position: relative;
+    margin-bottom: 10px;
+    padding: 5px 8px;
+    border-radius: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.chat-conversation:hover {
+    background-color: #f9f9f9;
+}
+
+/* Tooltip styling */
+[data-toggle="tooltip"] {
+    cursor: pointer;
+}
+
+/* Dropdown menu styling */
+.chat-conversation .dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 35px; /* Adjust as needed */
+    left: auto;
+    width: 120px;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 0px;
+    z-index: 1050; /* Ensures dropdown appears above the scrollable container */
+}
+
+/* Dropdown item styling */
+.chat-conversation .dropdown-item {
+    padding: 6px 16px;
+    font-size: 14px;
+    color: #333;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.chat-conversation .dropdown-item:hover {
+    background-color: #f0f0f0;
+}
+
+.chat-conversation .dropdown-item i {
+    margin-right: 10px;
+}
+
+/* Icon for the three dots */
+.chat-conversation .bi-three-dots {
+    font-size: 18px;
+    color: #333;
+    cursor: pointer;
+}
+
+/* Active class for showing the dropdown */
+.show {
+    display: block !important;
+}
+
+/* Scrollable container for chat conversations */
+#chatConversations {
+    height: 80vh;
+    overflow-y: scroll;
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+    scrollbar-width: none; /* Firefox */
+    position: relative; /* Ensure dropdowns appear above this container */
+}
+
+</style>
+</head>
+<body id="content">
+    <div class="wrapper d-flex align-items-stretch">
+        <nav id="sidebar" class="active">
+            <div class="p-4 pt-5">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="mb-0">Chats</h5>
+                    <button class="btn btn-outline-dark btn-sm" id="new_chat" data-toggle="tooltip" data-bs-placement="top" data-original-title="New Chat">
+                        <i class="fas fa-plus"></i>  
+                    </button>
+                    <button class="btn btn-outline-dark btn-sm d-none" id="back_2_chat" data-toggle="tooltip" data-bs-placement="top" title="Return to Current Chat">
+                        <i class="fas fa-arrow-left"></i>  
+                    </button>
+                </div>        
+          
+                <!-- Chat Conversations -->
+                <div id="chatConversations" class="mt-4">
+
+                </div>
+            </div>
+        </nav>
+        
+        <div id="content" class="p-4 p-md-2">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <div class="container-fluid">
+                    <button type="button" id="sidebarCollapse" class="btn" style="background-color: rgb(0 119 217); color: aliceblue; max-height: 30px; max-width: 30px; display: flex; justify-content: center;">
+                        <i class="fa fa-bars" style="font-size: small;"></i>
+                        <span class="sr-only">Toggle Menu</span>
+                    </button>
+                    <h3 class="mb-0 p-2" style="font-size: large;">ConVox AI Agent</h3>
+                </div>
+                <!-- Profile Dropdown Container -->
+                <div class="profile-container dropdown mr-3 text-center">
+                    <a href="#" class="dropdown-toggle" id="profileDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <img src="/profile.png" alt="User" class="rounded-circle border" height="35" width="35">
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="profileDropdown">
+                        <a class="dropdown-item" href="#" id="Dashboard">Dashboard</a>
+                        <a class="dropdown-item" href="#">Profile</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="/logout">Logout</a>
+                    </div>
+                </div>
+            </nav>
+            <div class="content">
+                <div class="text-center my-4" id="initial_heading">
+                    <h5 class="display-4" style="font-family: Poppins, Arial, sans-serif; font-size: 30px;">Interact with Your Documents</h5>
+                </div>
+                <div class="container">
+                    <div class="card border-0 bg-transparent">
+                        <div class="card-body">
+                            <div id="chatBox" class="d-none"></div>
+                            <div class="input-group" id="query-space">
+                                <input type="text" id="userMessage" spellcheck="true" class="form-control p-4" placeholder="Have a question about your Docs? Type it here...">
+                                <div class="input-group-append">
+                                    <button data-toggle="modal" data-target="#files_upload_modal" class="btn btn-outline-secondary" style="background-color: #707070;">
+                                        <i class="fas fa-paperclip"></i>
+                                    </button>
+                                </div>
+                                <div class="input-group-append">
+                                    <button id="sendBtn" class="btn">
+                                        <i class="fas fa-paper-plane"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <small id="errorIndicator" class="text-danger mt-1 d-none">Your query is too long. Please shorten it.</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for Dislike Button -->
+    <div class="modal fade" id="dislikeModal" tabindex="-1" role="dialog" aria-labelledby="dislikeModalLabelUnique" aria-hidden="true">
+        <input type="hidden" name="message_id" id="b_message_id">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="dislikeModalLabelUnique">Provide Feedback</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <!-- Chat-style UI for User's Question -->
+                    <div class="chat-container mb-3">
+                        <div class="message user-message">
+                            <div class="message-bubble user-bubble">
+                                <strong>Your Question:</strong>
+                                <p id="userQueryUnique" class="message-content"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chat-style UI for Bot's Response -->
+                    <div class="chat-container mb-3">
+                        <div class="message bot-message">
+                            <div class="message-bubble bot-bubble">
+                                <strong> Response:</strong>
+                                <p id="botResponseUnique" class="message-content"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Feedback Input -->
+                    <div class="form-group mb-3">
+                        <label for="remarksUnique">If you know a better or more relevant answer, please help us improve by sharing it here:</label>
+                        <textarea id="remarksUnique" class="form-control" rows="2" placeholder="Enter your remarks here..."></textarea>
+                    </div>
+
+                    <!-- File Uploader Section -->
+                    <div class="form-group mb-3">
+                        <label for="docUploadUnique" class="form-label">Upload Supporting Documents:</label>
+                        <input type="file" id="docUploadUnique" class="form-control py-1"  style="font-size: 12px;" multiple>
+                        <small class="form-text text-muted">You can upload files to help us provide better responses.</small>
+                        <small id="fileErrorContainer" class="form-text text-danger" style="display: none;"></small>
+                    </div>
+
+                    <!-- Display Uploaded Files -->
+                    <div id="uploadedFilesContainer" class="mt-3">
+                        <label class="form-label">Selected Files:</label>
+                        <div class="row" id="fileListContainer">
+                            <!-- Dynamically generated file list items will be added here -->
+                        </div>
+                        
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Skip</button>
+                    <button type="button" class="btn btn-primary" id="saveRemarksBtnUnique">Save Remarks</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for upload pdf-->
+    <div class="modal fade" id="files_upload_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog  modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Upload your Docs</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-4">
+                    <button class="btn btn-primary btn-block" id="uploadBtn">
+                        Click Here to Upload Docs
+                        <span class="badge" id="pdfCount"></span>
+                    </button>
+                    <input type="file" id="pdfInput" class="d-none" accept="application/pdf" multiple>
+                    <div id="uploadedFiles" class="mt-4"></div>
+                    <button class="btn btn-success btn-block d-none" id="processBtn">Process</button>
+                    <div id="successMessage" class="mt-4 text-success"></div>
+                </div>
+        
+                <div class="mb-4">
+                    <button class="btn btn-info btn-block" id="togglePdfNamesBtn">Show Uploaded Files</button>
+                    <div id="pdfNamesContainer" class="pdf-names-container mt-4"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+            </div>
+        </div>
+        </div>
+    </div>
+    
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/static/js/popper.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/chatbot.js"></script>
+    <script src="/static/js/main.js"></script>
+    <script src="/static/js/feedback.js"></script>
+    <script>
+        
+         $(document).ready(function () {
+    // Function to fetch and render conversations dynamically
+    function fetchAndRenderConversations() {
+        $.ajax({
+            url: '/get_history',
+            method: 'GET',
+            success: function (response) {
+                if (response.status === 'success') {
+                    // Clear existing content
+                    $('#chatConversations').empty();
+         
+                    // Render closed conversations
+                    response.closed_conversations.forEach(convo => {
+                        const conversationItem = createConversationElement(convo, false);
+                        $('#chatConversations').append(conversationItem);
+                    });
+
+                    $('[data-toggle="tooltip"]').tooltip();
+                }
+            },
+            error: function (xhr) {
+                console.error('Error fetching conversations:', xhr.responseJSON.message);
+            }
+        });
+    }
+
+    // Helper function to create a conversation element
+    function createConversationElement(convo, isActive) {
+        return $(`
+            <div class="chat-conversation" data-id="${convo.conversation_id}">
+                <span class="conversation-title text-dark" data-toggle="tooltip" style="font-size:13px;"
+                    title="${convo.title}">
+                    ${convo.title.length > 30 ? convo.title.substring(0, 25)  : convo.title}
+                </span>
+                <i class="bi bi-three-dots" onclick="toggleDropdown(event)"></i>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item view-conversation" href="#" data-id="${convo.conversation_id}">
+                        <i class="bi bi-eye"></i> View
+                    </a>
+                    <a class="dropdown-item edit-conversation" href="#" data-id="${convo.conversation_id}">
+                        <i class="bi bi-pencil"></i> Edit
+                    </a>
+                    <a class="dropdown-item delete-conversation" href="#" data-id="${convo.conversation_id}">
+                        <i class="bi bi-trash"></i> Delete
+                    </a>
+                    
+                </div>
+            </div>
+        `);
+    }
+
+    // Edit conversation title (inline)
+    $(document).on('click', '.edit-conversation', function (event) {
+        const conversationId = $(this).data('id');
+        const conversationItem = $(this).closest('.chat-conversation');
+        const titleElement = conversationItem.find('.conversation-title');
+        const currentTitle = titleElement.text().trim();
+
+        // Replace the title with an input field
+        const inputField = $('<input>', {
+            type: 'text',
+            value: currentTitle,
+            class: 'form-control',
+            autofocus: true
+        }).css({
+            'border-radius': '10px',
+            'padding': '5px',
+            'width': '100%' 
+        });
+
+        // Replace the title with the input field
+        titleElement.replaceWith(inputField);
+        $('.dropdown-menu').removeClass('show');
+        // When user blurs or presses Enter, save the new title
+        inputField.on('blur', function () {
+            const newTitle = inputField.val().trim();
+            // If title is empty, revert to the original title
+            if (newTitle && newTitle !== currentTitle) {
+                updateConversationTitle(conversationId, newTitle);
+            }
+            inputField.replaceWith(titleElement.text(newTitle || currentTitle));
+        });
+
+        // Handle "Enter" key to save changes
+        inputField.on('keypress', function (e) {
+            if (e.key === 'Enter') {
+                inputField.blur();
+            }
+        });
+
+        // Handle click outside the input to revert
+        $(document).on('mousedown.editing', function (e) {
+            if (!inputField.is(e.target) && inputField.has(e.target).length === 0) {
+                inputField.blur(); // Revert on outside click
+            }
+        });
+
+        // Clean up the outside click listener once editing is done
+        inputField.on('blur', function () {
+            $(document).off('mousedown.editing');
+        });
+    });
+
+    // Function to update the conversation title in the backend
+    function updateConversationTitle(conversationId, newTitle) {
+        $.ajax({
+            url: '/edit_conversation',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ conversation_id: conversationId, title: newTitle }),
+            success: function (response) {
+                if (response.status === 'success') {
+                    fetchAndRenderConversations();
+                } else {
+                    alert(response.message || 'Failed to update title.');
+                }
+            },
+            error: function (xhr) {
+                alert(`Error: ${xhr.responseJSON?.message || 'Failed to update title.'}`);
+            }
+        });
+    }
+
+    // Delete conversation
+    $(document).on('click', '.delete-conversation', function () {
+        const conversationId = $(this).data('id');
+        $('.dropdown-menu').removeClass('show');
+        deleteConversation(conversationId);
+    });
+
+    // Function to delete a conversation
+    function deleteConversation(conversationId) {
+        if (!confirm('Are you sure you want to delete this conversation?')) return;
+
+        $.ajax({
+            url: '/delete_conversation',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ conversation_id: conversationId }),
+            success: function (response) {
+                if (response.status === 'success') {
+                    alert(response.message); // Success message
+                    fetchAndRenderConversations(); // Refresh conversations
+                    fetchChatHistory();
+                } else {
+                    alert(response.message || 'Failed to delete conversation.');
+                }
+            },
+            error: function (xhr) {
+                alert(`Error: ${xhr.responseJSON?.message || 'Failed to delete conversation.'}`);
+            }
+        });
+    }
+
+   
+    // Toggle dropdown visibility
+    window.toggleDropdown = function (event) {
+        event.stopPropagation(); // Prevent dropdown click from triggering other events
+        const dropdownMenu = $(event.target).closest('.chat-conversation').find('.dropdown-menu');
+        $('.dropdown-menu').not(dropdownMenu).removeClass('show'); // Close other dropdowns
+        dropdownMenu.toggleClass('show');
+    };
+
+    // Close the dropdown if clicked outside
+    $(document).click(function (event) {
+        if (!$(event.target).closest('.chat-conversation').length) {
+            $('.dropdown-menu').removeClass('show');
+        }
+    });
+
+    // Initialize the conversations list
+    fetchAndRenderConversations();
+
+    $(document).ready(function(){
+            $(document).on('click','#new_chat', function(){
+                $.ajax({
+                    url: '/new_chat',
+                    method: 'POST',
+                    success: function(data) {
+            
+                       $('#chatBox').hide()
+                       $('#query-space').show();
+                       $('#back_2_chat').addClass('d-none')
+                       $('#new_chat').removeClass('d-none')
+                       $('#chatBox').css('overflow','scroll')
+                        if ($('#initial_heading').hasClass('d-none')) {
+                            $('#initial_heading').removeClass('d-none'); 
+                        }
+                        if ($('#initial_heading').css('display') === 'none') {
+                            $('#initial_heading').css('display', 'block'); 
+                        }
+                       $('#chatBox').empty()
+                       fetchAndRenderConversations()
+
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error fetching :", error);
+                    }
+                });
+            })
+         })
+    // Tooltip initialization
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+});
+
+    </script>
+</body>
+</html>
