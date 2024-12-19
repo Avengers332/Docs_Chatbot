@@ -42,7 +42,7 @@ chroma_db = Chroma(persist_directory=VECTOR_DB_FOLDER, embedding_function=embedd
 # LLM Setup
 llm = HuggingFaceHub(
     repo_id="nvidia/Llama-3.1-Nemotron-70B-Instruct-HF",   
-    huggingfacehub_api_token="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",
+    huggingfacehub_api_token="enter api token",
     model_kwargs={"temperature": 0.7, "max_length": 2000}
 )
 # LLM Setup
