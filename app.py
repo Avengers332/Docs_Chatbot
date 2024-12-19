@@ -48,7 +48,7 @@ llm = HuggingFaceHub(
 # LLM Setup
 # llm = HuggingFaceHub(
 #     repo_id="meta-llama/Llama-2-7b-chat-hf",   
-#     huggingfacehub_api_token="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",
+#     huggingfacehub_api_token="enter api token",
 #     model_kwargs={"temperature": 0.7, "max_length": 2000}
 # )
 
